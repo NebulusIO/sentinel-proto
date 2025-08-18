@@ -337,7 +337,7 @@ class ProcessAnalyzer:
         
         # Top CPU consumers
         cpu_processes = [p for p in self.processes if p.cpu is not None]
-        cpu_processes.sort(key=lambda x: x.cpu, reverse=True)
+        cpu_processes.sort(key=lambda x: x.cpu or 0, reverse=True)
         
         report.append("Top 5 CPU Consumers:")
         for proc in cpu_processes[:5]:
@@ -345,12 +345,12 @@ class ProcessAnalyzer:
         
         # Top memory consumers
         mem_processes = [p for p in self.processes if p.working_set]
-        mem_processes.sort(key=lambda x: x.working_set, reverse=True)
+        mem_processes.sort(key=lambda x: x.working_set or 0, reverse=True)
         
         report.append("")
         report.append("Top 5 Memory Consumers:")
         for proc in mem_processes[:5]:
-            mem_mb = proc.working_set / (1024 * 1024)
+            mem_mb = (proc.working_set or 0) / (1024 * 1024)
             report.append(f"  {proc.name}: {mem_mb:.1f} MB (PID: {proc.pid})")
         
         # Suspicious findings
